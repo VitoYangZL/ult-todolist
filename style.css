@@ -143,8 +143,11 @@ input::-webkit-inner-spin-button {
   display: flex;
   flex-direction: row;
   background-color: #f4d35e;
+  margin:0.5rem 0 ;
   padding: 1rem;
   border-radius: 35px;
+
+
 }
 
 .todo-container .todo-content,
@@ -172,4 +175,9 @@ input::-webkit-inner-spin-button {
 
 .todo-container .remove-button:hover {
   cursor: pointer;
+}
+
+.check-toggle{
+  opacity: .5;
+  color:#da4167
 }
