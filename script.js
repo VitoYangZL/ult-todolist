@@ -1,16 +1,97 @@
 const submittBtn = document.querySelector(".input-submitt");
 const todoArea = document.querySelector(".todo-area");
+const category = document.querySelector(".input-category");
+const modal = document.querySelector(".modal");
 
 loadData();
+
+category.addEventListener("click", () => {
+  modal.classList.toggle("display-toggle");
+
+  let addBtn = document.getElementById("modal-add");
+  let removeBtn = document.getElementById("modal-remove");
+  let tags = document.querySelectorAll(".tag"); //this variable is array and the items inside is typeof object
+  let tagArray = [...tags];
+  let checkedTag = null;
+
+  tagArray.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      tagArray.forEach((item) => {
+        item.classList.remove("tag-checked");
+      });
+      e.target.classList.toggle("tag-checked");
+      category.innerText = e.target.innerText;
+      checkedTag = e.target;
+      console.log(e.target.innerText);
+    });
+  });
+  removeBtn.addEventListener("click", () => {
+    if (checkedTag == null) {
+      alert("You have to select one tag!");
+      return;
+    }
+    checkedTag.remove();
+  });
+  addBtn.addEventListener("click", () => {
+    let tagsContainer = document.querySelector(".tags-container");
+    let tags = document.querySelectorAll(".tag");
+
+    console.log(tags);
+
+    let newTag = prompt("Please enter name of the new tag .", "");
+    if (newTag == "" || newTag == null) {
+      alert("You can't use empty name with a tag !");
+      return;
+    } else {
+      let tagsLoop = 0;
+      tags.forEach((item) => {
+        if (item.innerText == newTag) {
+          tagsLoop--;
+        }
+      });
+      console.log(tagsLoop);
+
+      if (tagsLoop < 0) {
+        alert(`You already have ${newTag}, Try another name !`);
+        return;
+      } else {
+        let newBtn = document.createElement("button");
+        newBtn.innerText = newTag;
+        newBtn.classList.add("tag");
+        tagsContainer.appendChild(newBtn);
+        console.log(`${newTag} tag adding successfully !`);
+        modal.classList.toggle("display-toggle");
+      }
+
+      // tags.forEach((item) => {
+      //   if (item.innerText === newTag) {
+      //     alert(`You already have ${newTag}, Try another name !`);
+      //   } else {
+      //     let newBtn = document.createElement("button");
+      //     newBtn.innerText = newTag;
+      //     newBtn.classList.add("tag");
+      //     tagsContainer.appendChild(newBtn);
+      //     console.log(`${newTag} tag adding successfully !`);
+      //     modal.classList.toggle("display-toggle");
+      //   }
+      // });
+    }
+  });
+});
 
 submittBtn.addEventListener("click", (e) => {
   e.preventDefault();
   let form = e.target.parentElement;
   let todoText = form[0].value;
-  let todoCategory = form[1].value;
+  let todoCategory = form[1].innerText;
   let todoMonth = form[2].value;
   let todoDate = form[3].value;
-  if (todoText === "" || todoCategory === "") {
+  console.log(form);
+  if (todoCategory === "Category") {
+    alert("You forgot to choose your category tag !");
+    return;
+  }
+  if (todoText === "") {
     alert("You forgot to write something.");
     return;
   }

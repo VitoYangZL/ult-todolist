@@ -23,7 +23,7 @@
         required
         placeholder="What you want?"
       />
-      <input type="text" class="input-content" placeholder="Category" />
+      <button class="input-content input-category">Category</button>
 
       <input
         type="number"
@@ -43,7 +43,23 @@
       />
       <button class="input-submitt">Submitt</button>
     </form>
-    <div class="line"></div>
+    <!-- <div class="separate-container">Pinned</div>
+    <div class="separate-container">Unpinned</div> -->
+
+    <div class="modal display-toggle">
+      <div class="modal-container">
+        <div class="modal-button-container">
+          <button id="modal-add" class="modal-button">Add</button>
+          <button id="modal-remove" class="modal-button">Remove</button>
+        </div>
+        <div class="modal-separate"></div>
+        <div class="tags-container">
+          <button class="tag">Living</button>
+          <button class="tag">Working</button>
+          <button class="tag">Daily</button>
+        </div>
+      </div>
+    </div>
 
     <section class="todo-area"></section>
 
