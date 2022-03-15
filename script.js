@@ -2,81 +2,102 @@ const submittBtn = document.querySelector(".input-submitt");
 const todoArea = document.querySelector(".todo-area");
 const category = document.querySelector(".input-category");
 const modal = document.querySelector(".modal");
+const addBtn = document.getElementById("modal-add");
+const removeBtn = document.getElementById("modal-remove");
+let tags = document.querySelectorAll(".tag"); //this variable is array and the items inside is typeof object
+let checkedTag = null;
 
 loadData();
+loadTags();
 
 category.addEventListener("click", () => {
+  tags = document.querySelectorAll(".tag");
   modal.classList.toggle("display-toggle");
 
-  let addBtn = document.getElementById("modal-add");
-  let removeBtn = document.getElementById("modal-remove");
-  let tags = document.querySelectorAll(".tag"); //this variable is array and the items inside is typeof object
-  let tagArray = [...tags];
-  let checkedTag = null;
-
-  tagArray.forEach((item) => {
+  tags.forEach((item) => {
     item.addEventListener("click", (e) => {
-      tagArray.forEach((item) => {
-        item.classList.remove("tag-checked");
-      });
-      e.target.classList.toggle("tag-checked");
-      category.innerText = e.target.innerText;
-      checkedTag = e.target;
-      console.log(e.target.innerText);
+      console.log(tags.length);
+
+      if (tags.length == 1) {
+        checkedTag = e.target;
+        checkedTag.classList.toggle("tag-checked");
+        if (checkedTag.classList.contains("tag-checked")) {
+          category.innerText = checkedTag.innerText;
+        } else {
+          category.innerText = "Category";
+        }
+      } else {
+        tags.forEach((item) => {
+          item.classList.remove("tag-checked");
+        });
+        checkedTag = e.target;
+        console.log(checkedTag);
+        checkedTag.classList.toggle("tag-checked");
+        category.innerText = checkedTag.innerText;
+      }
     });
   });
-  removeBtn.addEventListener("click", () => {
-    if (checkedTag == null) {
-      alert("You have to select one tag!");
-      return;
+});
+
+removeBtn.addEventListener("click", () => {
+  let tagsArray = JSON.parse(localStorage.getItem("tags"));
+  if (checkedTag == null) {
+    alert("You have to select one tag!");
+    return;
+  }
+  if (tagsArray !== null) {
+    for (let i = 0; i < tagsArray.length; i++) {
+      if (tagsArray[i] == checkedTag.innerText) {
+        tagsArray.splice(i, 1);
+      }
     }
+    localStorage.setItem("tags", JSON.stringify(tagsArray));
+    console.log(tagsArray);
     checkedTag.remove();
-  });
-  addBtn.addEventListener("click", () => {
-    let tagsContainer = document.querySelector(".tags-container");
-    let tags = document.querySelectorAll(".tag");
+    modal.classList.toggle("display-toggle");
+    category.innerText = "Category";
+    // tagsUpdate();
+  } else {
+    console.log("remove error");
+  }
+});
 
-    console.log(tags);
+addBtn.addEventListener("click", () => {
+  let tagsContainer = document.querySelector(".tags-container");
+  tags = document.querySelectorAll(".tag");
+  let newTag = prompt("Please enter name of the new tag .", "");
+  if (newTag == "" || newTag == null) {
+    alert("You can't use empty name with a tag !");
+    return;
+  } else {
+    let tagsLoop = 0;
+    tags.forEach((item) => {
+      if (item.innerText == newTag) {
+        tagsLoop--;
+        console.log(`adding action refuse`);
+      }
+    });
 
-    let newTag = prompt("Please enter name of the new tag .", "");
-    if (newTag == "" || newTag == null) {
-      alert("You can't use empty name with a tag !");
+    if (tagsLoop < 0) {
+      alert(`You already have ${newTag}, Try another name !`);
       return;
     } else {
-      let tagsLoop = 0;
-      tags.forEach((item) => {
-        if (item.innerText == newTag) {
-          tagsLoop--;
-        }
-      });
-      console.log(tagsLoop);
-
-      if (tagsLoop < 0) {
-        alert(`You already have ${newTag}, Try another name !`);
-        return;
-      } else {
-        let newBtn = document.createElement("button");
-        newBtn.innerText = newTag;
-        newBtn.classList.add("tag");
-        tagsContainer.appendChild(newBtn);
-        console.log(`${newTag} tag adding successfully !`);
-        modal.classList.toggle("display-toggle");
+      let newBtn = document.createElement("button");
+      console.log(`${newTag} tag adding successfully`);
+      newBtn.innerText = newTag;
+      newBtn.classList.add("tag");
+      tagsContainer.appendChild(newBtn);
+      modal.classList.toggle("display-toggle");
+      let myTagsArray = JSON.parse(localStorage.getItem("tags"));
+      if (myTagsArray == null) {
+        myTagsArray = [];
       }
-
-      // tags.forEach((item) => {
-      //   if (item.innerText === newTag) {
-      //     alert(`You already have ${newTag}, Try another name !`);
-      //   } else {
-      //     let newBtn = document.createElement("button");
-      //     newBtn.innerText = newTag;
-      //     newBtn.classList.add("tag");
-      //     tagsContainer.appendChild(newBtn);
-      //     console.log(`${newTag} tag adding successfully !`);
-      //     modal.classList.toggle("display-toggle");
-      //   }
-      // });
+      myTagsArray.push(newTag);
+      localStorage.setItem("tags", JSON.stringify(myTagsArray));
+      console.log(myTagsArray);
+      // tagsUpdate();
     }
-  });
+  }
 });
 
 submittBtn.addEventListener("click", (e) => {
@@ -129,9 +150,11 @@ submittBtn.addEventListener("click", (e) => {
   //check button
   let checkBtn = document.createElement("i");
   checkBtn.innerHTML = `<i class="fa fa-check check-button"></i>`;
-  checkBtn.addEventListener("click", () => {
-    let todoItem = e.target.parentElement.parentElement;
-    todoItem.classList.toggle("check-toggle");
+  checkBtn.addEventListener("click", (e) => {
+    if (e.target.classList.contains("check-button")) {
+      let todoItem = e.target.parentElement.parentElement;
+      todoItem.classList.toggle("check-toggle");
+    }
   });
 
   let removeBtn = document.createElement("i");
@@ -200,8 +223,10 @@ function loadData() {
       let checkBtn = document.createElement("i");
       checkBtn.innerHTML = `<i class="fa fa-check check-button"></i>`;
       checkBtn.addEventListener("click", (e) => {
-        let todoItem = e.target.parentElement.parentElement;
-        todoItem.classList.toggle("check-toggle");
+        if (e.target.classList.contains("check-button")) {
+          let todoItem = e.target.parentElement.parentElement;
+          todoItem.classList.toggle("check-toggle");
+        }
       });
 
       let removeBtn = document.createElement("i");
@@ -224,5 +249,26 @@ function loadData() {
       todo.appendChild(removeBtn);
       todoArea.appendChild(todo);
     });
+  }
+}
+
+function tagsUpdate() {
+  tags = [...document.querySelectorAll(".tag")];
+  checkedTag = null;
+  console.log(`initial tags`);
+  console.log(tags);
+}
+function loadTags() {
+  let tagsContainer = document.querySelector(".tags-container");
+  let myTags = localStorage.getItem("tags");
+  if (myTags !== null) {
+    let tagsArray = JSON.parse(myTags);
+    for (let i = 0; i < tagsArray.length; i++) {
+      let newTag = document.createElement("button");
+      newTag.classList.add("tag");
+      newTag.innerText = tagsArray[i];
+      tagsContainer.appendChild(newTag);
+    }
+    console.log(tagsArray);
   }
 }
