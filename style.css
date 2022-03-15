@@ -7,27 +7,6 @@
   font-family: "Fredoka";
 }
 
-header {
-  position: relative;
-}
-
-header i {
-  height: 3rem;
-  width: 3rem;
-  color: black;
-  font-size: 3rem;
-  margin-right: 0.5rem;
-  margin-top: 0.5rem;
-  top: 0;
-  right: 0;
-  position: absolute;
-  transition: all 0.2s ease;
-}
-
-header i:hover {
-  color: #da4167;
-}
-
 .display-toggle {
   display: none !important;
 }
@@ -43,6 +22,42 @@ header i:hover {
   height: 4rem;
   background-color: #f4d35e;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.header .search-text {
+  height: 50%;
+  position: absolute;
+  border: none;
+  outline: none;
+  overflow: hidden;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  top: 1rem;
+  right: 5rem;
+  background-color: white;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.header .search-button {
+  font-size: 2rem;
+  align-items: center;
+  height: 2rem;
+  width: 2rem;
+  color: black;
+  top: 1rem;
+  right: 1rem;
+  position: absolute;
+  transition: all 0.15s ease;
+}
+
+.header .search-button:hover {
+  cursor: pointer;
+  color: #da4167;
+  scale: 1.05;
+}
+
+.header .search-button:active {
+  scale: 0.95;
 }
 
 .input-container {

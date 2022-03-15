@@ -4,12 +4,17 @@ const category = document.querySelector(".input-category");
 const modal = document.querySelector(".modal");
 const addBtn = document.getElementById("modal-add");
 const removeBtn = document.getElementById("modal-remove");
+const searchText = document.querySelector(".searchText");
+const searchBtn = document.querySelector(".search-button");
 let tags = document.querySelectorAll(".tag"); //this variable is array and the items inside is typeof object
 let checkedTag = null;
+let searchKeyword = "";
 
+//Data Initialize
 loadData();
 loadTags();
 
+//Input Control
 category.addEventListener("click", () => {
   tags = document.querySelectorAll(".tag");
   modal.classList.toggle("display-toggle");
@@ -38,7 +43,6 @@ category.addEventListener("click", () => {
     });
   });
 });
-
 removeBtn.addEventListener("click", () => {
   let tagsArray = JSON.parse(localStorage.getItem("tags"));
   if (checkedTag == null) {
@@ -61,7 +65,6 @@ removeBtn.addEventListener("click", () => {
     console.log("remove error");
   }
 });
-
 addBtn.addEventListener("click", () => {
   let tagsContainer = document.querySelector(".tags-container");
   tags = document.querySelectorAll(".tag");
@@ -99,7 +102,6 @@ addBtn.addEventListener("click", () => {
     }
   }
 });
-
 submittBtn.addEventListener("click", (e) => {
   e.preventDefault();
   let form = e.target.parentElement;
@@ -251,7 +253,6 @@ function loadData() {
     });
   }
 }
-
 function tagsUpdate() {
   tags = [...document.querySelectorAll(".tag")];
   checkedTag = null;
@@ -269,6 +270,5 @@ function loadTags() {
       newTag.innerText = tagsArray[i];
       tagsContainer.appendChild(newTag);
     }
-    console.log(tagsArray);
   }
 }
