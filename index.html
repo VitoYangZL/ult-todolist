@@ -14,7 +14,7 @@
   <body>
     <header class="header">
       <nav class="nav"></nav>
-      <input type="text" class="search-text" />
+      <input type="text" class="search-text" placeholder="search by content" />
       <i class="fas fa-search search-button"></i>
     </header>
     <form class="input-container">
@@ -47,7 +47,7 @@
     <!-- <div class="separate-container">Pinned</div>
     <div class="separate-container">Unpinned</div> -->
 
-    <div class="modal display-toggle">
+    <div class="modal display">
       <div class="modal-container">
         <div class="modal-button-container">
           <button id="modal-add" class="modal-button">Add</button>
@@ -58,6 +58,21 @@
       </div>
     </div>
 
+    <div class="result display">
+      <div class="result-container">
+        <div class="result-header">
+          <p class="result-title">Searching Result</p>
+          <button class="result-close-button fas fa-close"></button>
+        </div>
+        <div class="separate-container"></div>
+        <div class="result-content">
+          <p class="search-condition">Keyword:Nick , Accuracy:16%</p>
+          <p class="search-display">
+            Full Content:pick Nick up after dinner. Date:2/11
+          </p>
+        </div>
+      </div>
+    </div>
     <section class="todo-area"></section>
 
     <script src="./script.js"></script>

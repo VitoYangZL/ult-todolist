@@ -4,8 +4,10 @@ const category = document.querySelector(".input-category");
 const modal = document.querySelector(".modal");
 const addBtn = document.getElementById("modal-add");
 const removeBtn = document.getElementById("modal-remove");
-const searchText = document.querySelector(".searchText");
 const searchBtn = document.querySelector(".search-button");
+const result = document.querySelector(".result");
+const closeBtn = document.querySelector(".result-close-button");
+let searchText = document.querySelector(".search-text");
 let tags = document.querySelectorAll(".tag"); //this variable is array and the items inside is typeof object
 let checkedTag = null;
 let searchKeyword = "";
@@ -14,36 +16,58 @@ let searchKeyword = "";
 loadData();
 loadTags();
 
-//Input Control
+//Category-Controller
 category.addEventListener("click", () => {
   tags = document.querySelectorAll(".tag");
-  modal.classList.toggle("display-toggle");
-
-  tags.forEach((item) => {
-    item.addEventListener("click", (e) => {
-      console.log(tags.length);
-
-      if (tags.length == 1) {
-        checkedTag = e.target;
-        checkedTag.classList.toggle("tag-checked");
-        if (checkedTag.classList.contains("tag-checked")) {
+  tagsContainer = document.querySelector(".tags-container");
+  modal.classList.toggle("display");
+  tagsContainer.addEventListener("click", (e) => {
+    event.stopImmediatePropagation();
+    if (e.target.classList.contains("tag")) {
+      // obj=1
+      if (tagsContainer.length == 1) {
+        //n -> y
+        if (!checkedTag.classList.contains("tag-checked")) {
+          checkedTag = e.target;
+          checkedTag.classList.add("tag-checked");
           category.innerText = checkedTag.innerText;
         } else {
+          //y -> n
+          checkedTag = null;
+          checkedTag.classList.remove("tag-checked");
           category.innerText = "Category";
         }
+        //obj > 1
       } else {
-        tags.forEach((item) => {
-          item.classList.remove("tag-checked");
-        });
-        checkedTag = e.target;
-        console.log(checkedTag);
-        checkedTag.classList.toggle("tag-checked");
-        category.innerText = checkedTag.innerText;
+        //n -> y
+        if (checkedTag == null) {
+          checkedTag = e.target;
+          checkedTag.classList.add("tag-checked");
+          category.innerText = checkedTag.innerText;
+        } else {
+          //same tag toggle
+          if (e.target.classList.contains("tag-checked")) {
+            checkedTag.classList.remove("tag-checked");
+            category.innerText = "Category";
+            checkedTag = null;
+          } else {
+            // 1 to another
+            if (e.target !== checkedTag) {
+              checkedTag.classList.remove("tag-checked");
+              checkedTag = e.target;
+              checkedTag.classList.add("tag-checked");
+              category.innerText = checkedTag.innerText;
+            }
+          }
+        }
       }
-    });
+    }
   });
 });
+
+//Category-Remove
 removeBtn.addEventListener("click", () => {
+  let removeItem;
   let tagsArray = JSON.parse(localStorage.getItem("tags"));
   if (checkedTag == null) {
     alert("You have to select one tag!");
@@ -56,15 +80,18 @@ removeBtn.addEventListener("click", () => {
       }
     }
     localStorage.setItem("tags", JSON.stringify(tagsArray));
-    console.log(tagsArray);
-    checkedTag.remove();
-    modal.classList.toggle("display-toggle");
+    removeItem = checkedTag;
+    removeItem.remove();
+    checkedTag = null;
+
+    modal.classList.toggle("display");
     category.innerText = "Category";
-    // tagsUpdate();
+    tagsUpdate();
   } else {
     console.log("remove error");
   }
 });
+//Category-Add
 addBtn.addEventListener("click", () => {
   let tagsContainer = document.querySelector(".tags-container");
   tags = document.querySelectorAll(".tag");
@@ -90,18 +117,19 @@ addBtn.addEventListener("click", () => {
       newBtn.innerText = newTag;
       newBtn.classList.add("tag");
       tagsContainer.appendChild(newBtn);
-      modal.classList.toggle("display-toggle");
+      modal.classList.toggle("display");
       let myTagsArray = JSON.parse(localStorage.getItem("tags"));
       if (myTagsArray == null) {
         myTagsArray = [];
       }
       myTagsArray.push(newTag);
       localStorage.setItem("tags", JSON.stringify(myTagsArray));
-      console.log(myTagsArray);
-      // tagsUpdate();
+      tags = document.querySelectorAll("tag");
+      checkedTag = null;
     }
   }
 });
+//Submoitt-Create New Object
 submittBtn.addEventListener("click", (e) => {
   e.preventDefault();
   let form = e.target.parentElement;
@@ -109,6 +137,7 @@ submittBtn.addEventListener("click", (e) => {
   let todoCategory = form[1].innerText;
   let todoMonth = form[2].value;
   let todoDate = form[3].value;
+  let todoCheck = false;
   console.log(form);
   if (todoCategory === "Category") {
     alert("You forgot to choose your category tag !");
@@ -149,16 +178,51 @@ submittBtn.addEventListener("click", (e) => {
   todo.appendChild(text);
   todo.appendChild(category);
   todo.appendChild(time);
+  let todoObject = {
+    todoText: todoText,
+    todoCategory: todoCategory,
+    todoMonth: todoMonth,
+    todoDate: todoDate,
+    todoCheck: todoCheck,
+  };
+  let myList = localStorage.getItem("list");
+  if (myList == null) {
+    localStorage.setItem("list", JSON.stringify([todoObject]));
+  } else {
+    let newListArray = JSON.parse(myList);
+    newListArray.push(todoObject);
+    localStorage.setItem("list", JSON.stringify(newListArray));
+  }
   //check button
   let checkBtn = document.createElement("i");
   checkBtn.innerHTML = `<i class="fa fa-check check-button"></i>`;
   checkBtn.addEventListener("click", (e) => {
-    if (e.target.classList.contains("check-button")) {
-      let todoItem = e.target.parentElement.parentElement;
-      todoItem.classList.toggle("check-toggle");
+    let todoItem = e.target.parentElement.parentElement;
+    if (!todoItem.classList.contains("check-toggle")) {
+      todoItem.classList.add("check-toggle");
+      todoCheck = true;
+      console.log(todoCheck);
+      let listArray = JSON.parse(localStorage.getItem("list"));
+      listArray.forEach((item) => {
+        if (todoItem.children[0].innerText === item.todoText) {
+          item.todoCheck = true;
+        }
+      });
+      localStorage.setItem("list", JSON.stringify(listArray));
+    } else {
+      todoItem.classList.remove("check-toggle");
+      todoCheck = false;
+      console.log(todoCheck);
+      let listArray = JSON.parse(localStorage.getItem("list"));
+      listArray.forEach((item) => {
+        if (todoItem.children[0].innerText === item.todoText) {
+          item.todoCheck = false;
+        }
+      });
+      localStorage.setItem("list", JSON.stringify(listArray));
     }
   });
-
+  todo.appendChild(checkBtn);
   let removeBtn = document.createElement("i");
   removeBtn.innerHTML = `<i class="fas fa-trash remove-button"></i>`;
   removeBtn.addEventListener("click", (e) => {
@@ -174,32 +238,81 @@ submittBtn.addEventListener("click", (e) => {
       console.log("remove successfuly");
     });
   });
-
-  todo.appendChild(checkBtn);
   todo.appendChild(removeBtn);
 
-  let todoObject = {
-    todoText: todoText,
-    todoCategory: todoCategory,
-    todoMonth: todoMonth,
-    todoDate: todoDate,
-  };
-
-  let myList = localStorage.getItem("list");
-  if (myList == null) {
-    localStorage.setItem("list", JSON.stringify([todoObject]));
-  } else {
-    let newListArray = JSON.parse(myList);
-    newListArray.push(todoObject);
-    localStorage.setItem("list", JSON.stringify(newListArray));
-  }
   form.children[0].value = "";
   form.children[1].value = "";
   form.children[2].value = "";
   form.children[3].value = "";
   todoArea.appendChild(todo);
+  modal.classList.add("display");
+});
+//Search - Accuracy way , I do this first 😂 , I figure this way by myself
+searchBtn.addEventListener("click", () => {
+  let rate = 0;
+  let calcAcc = 0;
+  let calcRate = 0;
+  let highest = "";
+  let searchArray = [];
+  let myList = JSON.parse(localStorage.getItem("list"));
+  searchText = document.querySelector(".search-text");
+  if (searchText.value == "") {
+    alert("You must have to write some keyword before searching.");
+    return;
+  } else {
+    searchKeyword = searchText.value.toLowerCase();
+    console.log(`search: ${searchKeyword}`);
+    searchText.value = "";
+    result.classList.remove("display");
+    myList.forEach((item) => {
+      searchArray.push(item.todoText.toLowerCase());
+    });
+    searchArray.forEach((item) => {
+      let charArraySearch = [];
+      let charArrayData = [];
+      for (let i = 0; i < searchKeyword.length; i++) {
+        charArraySearch.push(searchKeyword[i]);
+      }
+      for (let j = 0; j < item.length; j++) {
+        charArrayData.push(item[j]);
+      }
+      for (let x = 0; x < charArraySearch.length; x++) {
+        if (charArraySearch[x] == charArrayData[x]) {
+          calcAcc++;
+        }
+      }
+      calcRate = Math.floor((calcAcc / charArrayData.length) * 100);
+      if (calcRate > rate) {
+        rate = calcRate;
+        highest = item;
+      }
+      calcAcc = 0;
+    });
+    // let index = searchArray.findIndex();
+    let highestObj = myList.find(function (item) {
+      return item.todoText == highest;
+    });
+    if (rate != 0 || rate != false) {
+      let condition = document.querySelector(".search-condition");
+      let display = document.querySelector(".search-display");
+      condition.innerHTML = `Keyword:${searchKeyword} , Accuracy:${rate}%`;
+      display.innerHTML = `Name:${highest} , Date:${highestObj.todoMonth}/${highestObj.todoDate}`;
+    } else {
+      let condition = document.querySelector(".search-condition");
+      let display = document.querySelector(".search-display");
+      condition.innerHTML = `Keyword:${searchKeyword} , Accuracy:0%`;
+      display.innerHTML = `I can't find this , plz try again.`;
+    }
+    rate = 0;
+  }
 });
 
+closeBtn.addEventListener("click", () => {
+  result.classList.add("display");
+});
+//Search - Array Filter way , so common😥
+
+//Dug sheet
 function loadData() {
   let myList = localStorage.getItem("list");
   if (myList !== null) {
@@ -224,10 +337,32 @@ function loadData() {
 
       let checkBtn = document.createElement("i");
       checkBtn.innerHTML = `<i class="fa fa-check check-button"></i>`;
+      if (item.todoCheck == true) {
+        todo.classList.add("check-toggle");
+      }
       checkBtn.addEventListener("click", (e) => {
-        if (e.target.classList.contains("check-button")) {
-          let todoItem = e.target.parentElement.parentElement;
-          todoItem.classList.toggle("check-toggle");
+        let todoItem = e.target.parentElement.parentElement;
+        if (!todoItem.classList.contains("check-toggle")) {
+          todoItem.classList.add("check-toggle");
+          todoCheck = true;
+          console.log(todoCheck);
+          let listArray = JSON.parse(localStorage.getItem("list"));
+          listArray.forEach((item) => {
+            if (todoItem.children[0].innerText === item.todoText) {
+              item.todoCheck = true;
+            }
+          });
+          localStorage.setItem("list", JSON.stringify(listArray));
+        } else {
+          todoItem.classList.remove("check-toggle");
+          todoCheck = false;
+          let listArray = JSON.parse(localStorage.getItem("list"));
+          listArray.forEach((item) => {
+            if (todoItem.children[0].innerText === item.todoText) {
+              item.todoCheck = false;
+            }
+          });
+          localStorage.setItem("list", JSON.stringify(listArray));
         }
       });
 
@@ -254,10 +389,9 @@ function loadData() {
   }
 }
 function tagsUpdate() {
-  tags = [...document.querySelectorAll(".tag")];
+  tags = document.querySelectorAll(".tag");
   checkedTag = null;
-  console.log(`initial tags`);
-  console.log(tags);
+  console.log(`tags upadte`);
 }
 function loadTags() {
   let tagsContainer = document.querySelector(".tags-container");

@@ -7,7 +7,7 @@
   font-family: "Fredoka";
 }
 
-.display-toggle {
+.display {
   display: none !important;
 }
 
@@ -241,7 +241,7 @@ input::-webkit-inner-spin-button {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -20%);
+  transform: translate(-50%, 50%);
 }
 
 .modal-button-container {
@@ -312,4 +312,65 @@ input::-webkit-inner-spin-button {
 .tag-checked:hover {
   scale: 1.05;
   color: white;
+}
+
+.result {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.result .result-container {
+  position: absolute;
+  width: 50vw;
+  height: 480px;
+  border: #f4d35e solid 0.2rem;
+  background-color: whitesmoke;
+  border-radius: 15px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 10%);
+}
+
+.result-header {
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+.result-title {
+  font-size: 2.5rem;
+  /* position: absolute; */
+  top: 0;
+  margin-top: 0.5rem;
+}
+
+.result-close-button {
+  cursor: pointer;
+  position: absolute;
+  font-size: 3rem;
+  border: none;
+  background-color: transparent;
+  right: 0.5rem;
+  top: 0.5rem;
+  transition: all 0.15s ease;
+}
+
+.result-close-button:hover {
+  color: #da4167;
+  scale: 1.05;
+}
+.result-close-button:active {
+  scale: 0.95;
+}
+
+.search-condition {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.search-display {
+  margin: 2rem 0;
+  font-size: 1.75rem;
+  text-align: center;
 }
