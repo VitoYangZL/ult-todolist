@@ -1,5 +1,6 @@
 const submittBtn = document.querySelector(".input-submitt");
-const todoArea = document.querySelector(".todo-area");
+const todopinArea = document.querySelector(".todo-pin-container");
+const todoUnpinArea = document.querySelector(".todo-unpin-container");
 const category = document.querySelector(".input-category");
 const modal = document.querySelector(".modal");
 const addBtn = document.getElementById("modal-add");
@@ -8,7 +9,7 @@ const searchBtn = document.querySelector(".search-button");
 const result = document.querySelector(".result");
 const closeBtn = document.querySelector(".result-close-button");
 let searchText = document.querySelector(".search-text");
-let tags = document.querySelectorAll(".tag"); //this variable is array and the items inside is typeof object
+let tags = document.querySelectorAll(".tag");
 let checkedTag = null;
 let searchKeyword = "";
 
@@ -165,6 +166,9 @@ submittBtn.addEventListener("click", (e) => {
   let todo = document.createElement("div");
   todo.setAttribute("draggable", true);
   todo.classList.add("todo-container");
+  let pin = document.createElement("i");
+  pin.innerHTML = `<i class="fa fa-thumb-tack todo-pin"></i>`;
+  pin.classList.add("todo-pin");
   let text = document.createElement("p");
   text.classList.add("todo-content");
   text.innerText = todoText;
@@ -175,16 +179,20 @@ submittBtn.addEventListener("click", (e) => {
   time.classList.add("todo-time");
   time.innerText = `${todoMonth}/${todoDate}`;
 
+  todo.appendChild(pin);
   todo.appendChild(text);
   todo.appendChild(category);
   todo.appendChild(time);
+  //generate first object
   let todoObject = {
     todoText: todoText,
     todoCategory: todoCategory,
     todoMonth: todoMonth,
     todoDate: todoDate,
     todoCheck: todoCheck,
+    pinState: false,
   };
+  //to local storage
   let myList = localStorage.getItem("list");
   if (myList == null) {
     localStorage.setItem("list", JSON.stringify([todoObject]));
@@ -197,54 +205,80 @@ submittBtn.addEventListener("click", (e) => {
   let checkBtn = document.createElement("i");
   checkBtn.innerHTML = `<i class="fa fa-check check-button"></i>`;
   checkBtn.addEventListener("click", (e) => {
-    let todoItem = e.target.parentElement.parentElement;
-    if (!todoItem.classList.contains("check-toggle")) {
-      todoItem.classList.add("check-toggle");
-      todoCheck = true;
-      console.log(todoCheck);
-      let listArray = JSON.parse(localStorage.getItem("list"));
-      listArray.forEach((item) => {
-        if (todoItem.children[0].innerText === item.todoText) {
-          item.todoCheck = true;
-        }
-      });
-      localStorage.setItem("list", JSON.stringify(listArray));
-    } else {
-      todoItem.classList.remove("check-toggle");
-      todoCheck = false;
-      console.log(todoCheck);
-      let listArray = JSON.parse(localStorage.getItem("list"));
-      listArray.forEach((item) => {
-        if (todoItem.children[0].innerText === item.todoText) {
-          item.todoCheck = false;
-        }
-      });
-      localStorage.setItem("list", JSON.stringify(listArray));
+    if (e.target.classList.contains("fa")) {
+      let todoItem = e.target.parentElement.parentElement;
+      if (!todoItem.classList.contains("check-toggle")) {
+        todoItem.classList.add("check-toggle");
+        todoCheck = true;
+        console.log(todoCheck);
+        let listArray = JSON.parse(localStorage.getItem("list"));
+        listArray.forEach((item) => {
+          if (todoItem.children[0].innerText === item.todoText) {
+            item.todoCheck = true;
+          }
+        });
+        localStorage.setItem("list", JSON.stringify(listArray));
+      } else {
+        todoItem.classList.remove("check-toggle");
+        todoCheck = false;
+        console.log(todoCheck);
+        let listArray = JSON.parse(localStorage.getItem("list"));
+        listArray.forEach((item) => {
+          if (todoItem.children[0].innerText === item.todoText) {
+            item.todoCheck = false;
+          }
+        });
+        localStorage.setItem("list", JSON.stringify(listArray));
+      }
     }
   });
   todo.appendChild(checkBtn);
+  //remove button
   let removeBtn = document.createElement("i");
   removeBtn.innerHTML = `<i class="fas fa-trash remove-button"></i>`;
   removeBtn.addEventListener("click", (e) => {
-    let removeItem = e.target.parentElement.parentElement;
-    let keyText = removeItem.childNodes[0].innerText;
-    let listArray = JSON.parse(localStorage.getItem("list"));
-    listArray.forEach((item, index) => {
-      if (item.todoText == keyText) {
-        listArray.splice(index, 1);
-        localStorage.setItem("list", JSON.stringify(listArray));
-      }
-      removeItem.remove();
-      console.log("remove successfuly");
-    });
+    if (e.target.classList.contains("fas")) {
+      let removeItem = e.target.parentElement.parentElement;
+      let keyText = removeItem.childNodes[1].innerText;
+      let listArray = JSON.parse(localStorage.getItem("list"));
+      listArray.forEach((item, index) => {
+        if (item.todoText == keyText) {
+          listArray.splice(index, 1);
+          localStorage.setItem("list", JSON.stringify(listArray));
+        }
+        removeItem.remove();
+        console.log("remove successfuly");
+      });
+    }
   });
   todo.appendChild(removeBtn);
-
+  //pin button
+  pin.addEventListener("click", (e) => {
+    if (e.target.classList.contains("todo-pin")) {
+      let pinItem = e.target.parentElement.parentElement;
+      let keyText = pinItem.childNodes[1].innerText;
+      let listArray = JSON.parse(localStorage.getItem("list"));
+      listArray.forEach((item) => {
+        if (item.todoText == keyText) {
+          if (item.pinState == false) {
+            item.pinState = true;
+            todopinArea.appendChild(pinItem);
+            localStorage.setItem("list", JSON.stringify(listArray));
+          } else {
+            item.pinState = false;
+            todoUnpinArea.appendChild(pinItem);
+            localStorage.setItem("list", JSON.stringify(listArray));
+          }
+        }
+      });
+    }
+  });
+  //reset input
   form.children[0].value = "";
   form.children[1].value = "";
   form.children[2].value = "";
   form.children[3].value = "";
-  todoArea.appendChild(todo);
+  todoUnpinArea.appendChild(todo);
   modal.classList.add("display");
 });
 //Search - Accuracy way , I do this first 😂 , I figure this way by myself
@@ -288,7 +322,6 @@ searchBtn.addEventListener("click", () => {
       }
       calcAcc = 0;
     });
-    // let index = searchArray.findIndex();
     let highestObj = myList.find(function (item) {
       return item.todoText == highest;
     });
@@ -301,7 +334,7 @@ searchBtn.addEventListener("click", () => {
       let condition = document.querySelector(".search-condition");
       let display = document.querySelector(".search-display");
       condition.innerHTML = `Keyword:${searchKeyword} , Accuracy:0%`;
-      display.innerHTML = `I can't find this , plz try again.`;
+      display.innerHTML = `I can't find this , coz my creater is noob  , plz try a phrase which is more straight again.`;
     }
     rate = 0;
   }
@@ -321,6 +354,9 @@ function loadData() {
       let todo = document.createElement("div");
       todo.setAttribute("draggable", true);
       todo.classList.add("todo-container");
+      let pin = document.createElement("i");
+      pin.innerHTML = `<i class="fa fa-thumb-tack todo-pin"></i>`;
+      pin.classList.add("todo-pin");
       let text = document.createElement("p");
       text.classList.add("todo-content");
       text.innerText = item.todoText;
@@ -330,7 +366,7 @@ function loadData() {
       let time = document.createElement("p");
       time.classList.add("todo-time");
       time.innerText = `${item.todoMonth}/${item.todoDate}`;
-
+      todo.appendChild(pin);
       todo.appendChild(text);
       todo.appendChild(category);
       todo.appendChild(time);
@@ -341,50 +377,78 @@ function loadData() {
         todo.classList.add("check-toggle");
       }
       checkBtn.addEventListener("click", (e) => {
-        let todoItem = e.target.parentElement.parentElement;
-        if (!todoItem.classList.contains("check-toggle")) {
-          todoItem.classList.add("check-toggle");
-          todoCheck = true;
-          console.log(todoCheck);
-          let listArray = JSON.parse(localStorage.getItem("list"));
-          listArray.forEach((item) => {
-            if (todoItem.children[0].innerText === item.todoText) {
-              item.todoCheck = true;
-            }
-          });
-          localStorage.setItem("list", JSON.stringify(listArray));
-        } else {
-          todoItem.classList.remove("check-toggle");
-          todoCheck = false;
-          let listArray = JSON.parse(localStorage.getItem("list"));
-          listArray.forEach((item) => {
-            if (todoItem.children[0].innerText === item.todoText) {
-              item.todoCheck = false;
-            }
-          });
-          localStorage.setItem("list", JSON.stringify(listArray));
+        if (e.target.classList.contains("fa")) {
+          let todoItem = e.target.parentElement.parentElement;
+          if (!todoItem.classList.contains("check-toggle")) {
+            todoItem.classList.add("check-toggle");
+            todoCheck = true;
+            console.log(todoCheck);
+            let listArray = JSON.parse(localStorage.getItem("list"));
+            listArray.forEach((item) => {
+              if (todoItem.children[0].innerText === item.todoText) {
+                item.todoCheck = true;
+              }
+            });
+            localStorage.setItem("list", JSON.stringify(listArray));
+          } else {
+            todoItem.classList.remove("check-toggle");
+            todoCheck = false;
+            let listArray = JSON.parse(localStorage.getItem("list"));
+            listArray.forEach((item) => {
+              if (todoItem.children[0].innerText === item.todoText) {
+                item.todoCheck = false;
+              }
+            });
+            localStorage.setItem("list", JSON.stringify(listArray));
+          }
         }
       });
 
       let removeBtn = document.createElement("i");
       removeBtn.innerHTML = `<i class="fas fa-trash remove-button"></i>`;
       removeBtn.addEventListener("click", (e) => {
-        let removeItem = e.target.parentElement.parentElement;
-        let keyText = removeItem.childNodes[0].innerText;
-        let listArray = JSON.parse(localStorage.getItem("list"));
-        listArray.forEach((item, index) => {
-          if (item.todoText == keyText) {
-            listArray.splice(index, 1);
-            localStorage.setItem("list", JSON.stringify(listArray));
-          }
-          removeItem.remove();
-          console.log("remove successfuly");
-        });
+        if (e.target.classList.contains("fas")) {
+          let removeItem = e.target.parentElement.parentElement;
+          let keyText = removeItem.childNodes[1].innerText;
+          let listArray = JSON.parse(localStorage.getItem("list"));
+          listArray.forEach((item, index) => {
+            if (item.todoText == keyText) {
+              listArray.splice(index, 1);
+              localStorage.setItem("list", JSON.stringify(listArray));
+            }
+            removeItem.remove();
+            console.log("remove successfuly");
+          });
+        }
+      });
+      pin.addEventListener("click", (e) => {
+        if (e.target.classList.contains("todo-pin")) {
+          let pinItem = e.target.parentElement.parentElement;
+          let keyText = pinItem.childNodes[1].innerText;
+          let listArray = JSON.parse(localStorage.getItem("list"));
+          listArray.forEach((item) => {
+            if (item.todoText == keyText) {
+              if (item.pinState == false) {
+                item.pinState = true;
+                todopinArea.appendChild(pinItem);
+                localStorage.setItem("list", JSON.stringify(listArray));
+              } else {
+                item.pinState = false;
+                todoUnpinArea.appendChild(pinItem);
+                localStorage.setItem("list", JSON.stringify(listArray));
+              }
+            }
+          });
+        }
       });
 
       todo.appendChild(checkBtn);
       todo.appendChild(removeBtn);
-      todoArea.appendChild(todo);
+      if (item.pinState == true) {
+        todopinArea.appendChild(todo);
+      } else {
+        todoUnpinArea.appendChild(todo);
+      }
     });
   }
 }
