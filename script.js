@@ -9,15 +9,61 @@ const removeBtn = document.getElementById("modal-remove");
 const searchBtn = document.querySelector(".search-button");
 const result = document.querySelector(".result");
 const closeBtn = document.querySelector(".result-close-button");
+const colorSwitch = document.getElementById("ball");
+const root = document.documentElement;
 let searchText = document.querySelector(".search-text");
 let tags = document.querySelectorAll(".tag");
 let checkedTag = null;
 let searchKeyword = "";
 
-//Data Initialize
+//Initialize
+colorModeInitialize();
 loadData();
 loadTags();
+//Color Mode - Be careful to do anything in this
+colorSwitch.addEventListener("click", (e) => {
+  e.stopImmediatePropagation();
+  let mode = JSON.parse(localStorage.getItem("state"));
+  if (mode.color === "light") {
+    root.style.setProperty("--background-color", "#000");
+    root.style.setProperty("--text-color", "#fff");
+    root.style.setProperty("--component-color", "#da4167");
+    root.style.setProperty("--interaction-color", "#f4d35e");
+    root.style.setProperty("--background-color-modal", "#333");
 
+    root.style.setProperty("--color-mode-active", "#000");
+    root.style.setProperty("--color-mode-passive", "#da4167");
+
+    root.style.setProperty("--color-light-side", "#000");
+    root.style.setProperty("--color-dark-side", "#f4d35e");
+    colorSwitch.classList.remove("ball-light");
+    colorSwitch.classList.add("ball-dark");
+
+    mode.color = "dark";
+    localStorage.setItem("state", JSON.stringify(mode));
+    console.log("dark mode");
+  } else if (mode.color === "dark") {
+    root.style.setProperty("--background-color", "#fff");
+    root.style.setProperty("--text-color", "#000");
+    root.style.setProperty("--component-color", "#f4d35e");
+    root.style.setProperty("--interaction-color", "#da4167");
+    root.style.setProperty("--color-mode-active", "#da4167");
+    root.style.setProperty("--color-mode-passive", "#000");
+    root.style.setProperty("--background-color-modal", "#eee");
+
+    root.style.setProperty("--color-light-side", "#da4167");
+    root.style.setProperty("--color-dark-side", "#000");
+    colorSwitch.classList.remove("ball-dark");
+    colorSwitch.classList.add("ball-light");
+
+    mode.color = "light";
+    localStorage.setItem("state", JSON.stringify(mode));
+    console.log("light mode");
+  } else {
+    alert("somewhere getting wrong , plz contact us .");
+    return;
+  }
+});
 //Category-Controller
 category.addEventListener("click", () => {
   tags = document.querySelectorAll(".tag");
@@ -214,7 +260,7 @@ submittBtn.addEventListener("click", (e) => {
         console.log(todoCheck);
         let listArray = JSON.parse(localStorage.getItem("list"));
         listArray.forEach((item) => {
-          if (todoItem.children[0].innerText === item.todoText) {
+          if (todoItem.children[1].innerText === item.todoText) {
             item.todoCheck = true;
           }
         });
@@ -225,7 +271,7 @@ submittBtn.addEventListener("click", (e) => {
         console.log(todoCheck);
         let listArray = JSON.parse(localStorage.getItem("list"));
         listArray.forEach((item) => {
-          if (todoItem.children[0].innerText === item.todoText) {
+          if (todoItem.children[1].innerText === item.todoText) {
             item.todoCheck = false;
           }
         });
@@ -282,27 +328,12 @@ submittBtn.addEventListener("click", (e) => {
   todoUnpinArea.appendChild(todo);
   modal.classList.add("display");
 });
-//Sort - By Time (I will do another MergeSort if I was Free)
+//Sort - By Time (I will do another MergeSort if I am Free)
 sortByTimeBtn.addEventListener("click", () => {
   let listArray = JSON.parse(localStorage.getItem("list"));
-  // let pinArray = [];
-  // let unPinArray = [];
-
-  // listArray.forEach((item) => {
-  //   if (item.pinState === true) {
-  //     pinArray.push(item);
-  //   } else {
-  //     unPinArray.push(item);
-  //   }
-  // });
-  // pinArray = sortByTime(pinArray)
-  // unPinArray = sortByTime(unPinArray)
-
   listArray = sortByTime(listArray).reverse();
   localStorage.setItem("list", JSON.stringify(listArray));
   loadData();
-
-  // console.log(listArray, pinArray, unPinArray);
 });
 //Search - Accuracy way , I do this first 😂 , I figure this way by myself
 searchBtn.addEventListener("click", () => {
@@ -364,11 +395,10 @@ searchBtn.addEventListener("click", () => {
     rate = 0;
   }
 });
-
+//Result modal
 closeBtn.addEventListener("click", () => {
   result.classList.add("display");
 });
-//Search - Array Filter way , so common😥
 
 //Dug sheet
 function loadData() {
@@ -414,7 +444,7 @@ function loadData() {
             console.log(todoCheck);
             let listArray = JSON.parse(localStorage.getItem("list"));
             listArray.forEach((item) => {
-              if (todoItem.children[0].innerText === item.todoText) {
+              if (todoItem.children[1].innerText === item.todoText) {
                 item.todoCheck = true;
               }
             });
@@ -424,7 +454,7 @@ function loadData() {
             todoCheck = false;
             let listArray = JSON.parse(localStorage.getItem("list"));
             listArray.forEach((item) => {
-              if (todoItem.children[0].innerText === item.todoText) {
+              if (todoItem.children[1].innerText === item.todoText) {
                 item.todoCheck = false;
               }
             });
@@ -504,8 +534,6 @@ function sortByTime(array) {
   let counter = array.length;
   return sorting(saveArray, counter);
 }
-// console.log(saveArray, sortedArray);
-
 function sorting(array, counter) {
   let compare = 0;
   let order = 0;
@@ -524,4 +552,44 @@ function sorting(array, counter) {
   }
   // console.log(sortedArray);
   return sortedArray;
+}
+function colorModeInitialize() {
+  let mode = JSON.parse(localStorage.getItem("state"));
+  if (mode == null) {
+    let bodyState = {
+      color: "light",
+      // userToken:,
+      // userVerify:,
+    };
+    localStorage.setItem("state", JSON.stringify(bodyState));
+  } else {
+    if (mode.color === "light") {
+      root.style.setProperty("--background-color", "#fff");
+      root.style.setProperty("--text-color", "#000");
+      root.style.setProperty("--component-color", "#f4d35e");
+      root.style.setProperty("--interaction-color", "#da4167");
+      root.style.setProperty("--color-mode-active", "#da4167");
+      root.style.setProperty("--color-mode-passive", "#000");
+      root.style.setProperty("--background-color-modal", "#eee");
+
+      root.style.setProperty("--color-light-side", "#da4167");
+      root.style.setProperty("--color-dark-side", "#000");
+      colorSwitch.classList.remove("ball-dark");
+      colorSwitch.classList.add("ball-light");
+    } else if (mode.color === "dark") {
+      root.style.setProperty("--background-color", "#000");
+      root.style.setProperty("--text-color", "#fff");
+      root.style.setProperty("--component-color", "#da4167");
+      root.style.setProperty("--interaction-color", "#f4d35e");
+      root.style.setProperty("--background-color-modal", "#333");
+
+      root.style.setProperty("--color-mode-active", "#000");
+      root.style.setProperty("--color-mode-passive", "#da4167");
+
+      root.style.setProperty("--color-light-side", "#000");
+      root.style.setProperty("--color-dark-side", "#f4d35e");
+      colorSwitch.classList.remove("ball-light");
+      colorSwitch.classList.add("ball-dark");
+    }
+  }
 }

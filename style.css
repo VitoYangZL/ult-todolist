@@ -7,6 +7,24 @@
   font-family: "Fredoka";
 }
 
+:root {
+  --background-color: #fff;
+  --text-color: #000;
+  --component-color: #f4d35e;
+  --interaction-color: #da4167;
+  --color-mode-active: #da4167;
+  --color-mode-passive: #000;
+  --color-light-side: #da4167;
+  --color-dark-side: #000;
+  --background-color-modal: #eee;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--background-color);
+  transition: all 0.15s ease-in-out;
+}
+
 .display {
   display: none !important;
 }
@@ -15,13 +33,63 @@
   width: 100vw;
   display: flex;
   position: relative;
+  height: 4rem;
+  background-color: var(--component-color);
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 }
 
-.header .nav {
-  width: 100%;
-  height: 4rem;
-  background-color: #f4d35e;
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+.color-mode-container {
+  position: relative;
+  display: flex;
+  min-width: 10rem;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.color-mode-container .fas {
+  font-size: 2rem;
+}
+
+.color-switch {
+  display: flex;
+  position: relative;
+  width: 60%;
+  height: 2rem;
+  border-radius: 35px;
+  background-color: var(--interaction-color);
+}
+
+.ball-light {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: white;
+  left: 0;
+  transition: all 0.15s ease-in-out;
+}
+
+.ball-dark {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: white;
+  right: 0;
+  transition: all 0.15s ease-in-out;
+}
+
+.ball-light:hover,
+.ball-dark:hover {
+  cursor: pointer;
+}
+
+.light {
+  color: var(--color-light-side);
+}
+
+.dark {
+  color: var(--color-dark-side);
 }
 
 .header .search-text {
@@ -43,16 +111,16 @@
   align-items: center;
   height: 2rem;
   width: 2rem;
-  color: black;
+  color: var(--text-color);
   top: 1rem;
-  right: 1rem;
+  right: 2rem;
   position: absolute;
   transition: all 0.15s ease;
 }
 
 .header .search-button:hover {
   cursor: pointer;
-  color: #da4167;
+  color: var(--interaction-color);
   scale: 1.05;
 }
 
@@ -65,9 +133,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-top: 1rem;
-    background-color: #f4d35e;
-    padding: 0.25rem; */
 }
 
 .input-container .input-content {
@@ -77,10 +142,10 @@
   font-size: 1.25rem;
   text-align: center;
   border: none;
-  background-color: #f4d35e;
+  background-color: var(--component-color);
   margin: 1rem 0.5rem;
   border-radius: 35px;
-  color: black;
+  color: var(--text-color);
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -94,7 +159,7 @@
 
 .input-container .input-category:hover {
   cursor: pointer;
-  color: #da4167;
+  color: var(--interaction-color);
   scale: 1.05;
   box-shadow: 5px 3px 8px rgba(0, 0, 0, 0.3);
 }
@@ -111,10 +176,10 @@
   font-size: 1.25rem;
   text-align: center;
   border: none;
-  background-color: #f4d35e;
+  background-color: var(--component-color);
   margin: 1rem 0.5rem;
   border-radius: 35px;
-  color: black;
+  color: var(--text-color);
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -139,10 +204,10 @@ input::-webkit-inner-spin-button {
   font-size: 1.25rem;
   text-align: center;
   border: none;
-  background-color: #f4d35e;
+  background-color: var(--component-color);
   margin: 1rem 0.5rem;
   border-radius: 35px;
-  color: black;
+  color: var(--text-color);
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
   transition: all 0.15s ease;
 }
@@ -151,7 +216,7 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
   scale: 1.05;
   box-shadow: 5px 3px 8px rgba(0, 0, 0, 0.3);
-  color: #da4167;
+  color: var(--interaction-color);
 }
 
 .input-container .input-submitt:active {
@@ -162,7 +227,7 @@ input::-webkit-inner-spin-button {
 .input-sort-by-time:hover {
   cursor: pointer;
   scale: 1.05;
-  color: #da4167;
+  color: var(--interaction-color);
 }
 .input-sort-by-time:active {
   scale: 0.95;
@@ -170,14 +235,13 @@ input::-webkit-inner-spin-button {
 
 .separate-container {
   width: 100%;
-  /* height: 0.5rem; */
   padding: 0 15vw;
   margin-top: 0.5rem;
   margin-bottom: 1.5rem;
   background-color: transparent;
-  border-bottom: #f4d35e solid 1px;
+  border-bottom: var(--component-color) solid 1px;
   text-align: center;
-  color: #da4167;
+  color: var(--interaction-color);
   margin: 1.5rem 0;
   padding: 0.5rem 0;
   font-family: "Fredoka";
@@ -195,10 +259,11 @@ input::-webkit-inner-spin-button {
 .todo-pin-container .todo-container {
   display: flex;
   flex-direction: row;
-  background-color: #f4d35e;
+  background-color: var(--component-color);
   margin: 0.5rem 0;
   padding: 1rem;
   border-radius: 35px;
+  color: var(--text-color);
 }
 
 .todo-container .todo-content,
@@ -221,7 +286,7 @@ input::-webkit-inner-spin-button {
 .todo-container .remove-button {
   font-size: 2rem;
   margin: 0 1rem;
-  color: #da4167;
+  color: var(--interaction-color);
 }
 
 .todo-container .remove-button:hover {
@@ -235,27 +300,25 @@ input::-webkit-inner-spin-button {
 }
 .todo-pin:hover {
   cursor: pointer;
-  color: #da4167;
+  color: var(--interaction-color);
 }
 .todo-pin:active {
   scale: 0.95;
 }
 .check-toggle {
   opacity: 0.5;
-  color: #da4167;
+  color: var(--interaction-color);
 }
 
 .modal-separate {
   width: 100%;
   margin-top: 1rem;
-  /* margin-bottom: 1rem; */
-  border-bottom: #f4d35e solid 0.2rem;
+  border-bottom: var(--component-color) solid 0.2rem;
 }
 
 .modal {
   display: flex;
   justify-content: center;
-  /* position: relative; */
   position: absolute;
   left: 50%;
   top: 20%;
@@ -264,8 +327,8 @@ input::-webkit-inner-spin-button {
 
 .modal-container {
   width: 50vw;
-  border: #f4d35e solid 0.2rem;
-  background-color: whitesmoke;
+  border: var(--component-color) solid 0.2rem;
+  background-color: var(--background-color-modal);
   border-radius: 15px;
   position: absolute;
   left: 50%;
@@ -280,10 +343,10 @@ input::-webkit-inner-spin-button {
 
 .modal-button-container .modal-button {
   width: 20%;
-  background-color: #f4d35e;
+  background-color: var(--component-color);
   border: none;
   border-radius: 35px;
-  color: #333;
+  color: var(--text-color);
   font-size: 1.25rem;
   margin-top: 1rem;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
@@ -294,7 +357,7 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
   scale: 1.05;
   box-shadow: 5px 3px 8px rgba(0, 0, 0, 0.3);
-  color: #da4167;
+  color: var(--interaction-color);
 }
 
 .modal-button-container .modal-button:active {
@@ -310,11 +373,11 @@ input::-webkit-inner-spin-button {
 }
 
 .tag {
-  background-color: #f4d35e;
+  background-color: var(--component-color);
   border: none;
   min-width: 20%;
   border-radius: 35px;
-  color: #333;
+  color: var(--text-color);
   font-size: 1.25rem;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
   margin: 0.5rem 0.25rem;
@@ -325,7 +388,7 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
   scale: 1.05;
   box-shadow: 5px 3px 8px rgba(0, 0, 0, 0.3);
-  color: #da4167;
+  color: var(--interaction-color);
 }
 
 .tag:active {
@@ -334,13 +397,13 @@ input::-webkit-inner-spin-button {
 }
 
 .tag-checked {
-  background-color: #da4167;
-  color: white;
+  background-color: var(--interaction-color);
+  color: var(--background-color);
 }
 
 .tag-checked:hover {
   scale: 1.05;
-  color: white;
+  color: var(--background-color);
 }
 
 .result {
@@ -353,13 +416,13 @@ input::-webkit-inner-spin-button {
   position: absolute;
   width: 50vw;
   height: 480px;
-  border: #f4d35e solid 0.2rem;
-  background-color: whitesmoke;
+  color: var(--text-color);
+  border: var(--component-color) solid 0.2rem;
+  background-color: var(--background-color-modal);
   border-radius: 15px;
-  position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, 10%);
+  transform: translate(-50%, -50%);
 }
 
 .result-header {
@@ -369,7 +432,6 @@ input::-webkit-inner-spin-button {
 }
 .result-title {
   font-size: 2.5rem;
-  /* position: absolute; */
   top: 0;
   margin-top: 0.5rem;
 }
@@ -380,13 +442,14 @@ input::-webkit-inner-spin-button {
   font-size: 3rem;
   border: none;
   background-color: transparent;
+  color: var(--text-color);
   right: 0.5rem;
   top: 0.5rem;
   transition: all 0.15s ease;
 }
 
 .result-close-button:hover {
-  color: #da4167;
+  color: var(--interaction-color);
   scale: 1.05;
 }
 .result-close-button:active {
