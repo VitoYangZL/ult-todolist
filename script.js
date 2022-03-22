@@ -1,4 +1,5 @@
 const submittBtn = document.querySelector(".input-submitt");
+const sortByTimeBtn = document.querySelector(".input-sort-by-time");
 const todopinArea = document.querySelector(".todo-pin-container");
 const todoUnpinArea = document.querySelector(".todo-unpin-container");
 const category = document.querySelector(".input-category");
@@ -281,6 +282,28 @@ submittBtn.addEventListener("click", (e) => {
   todoUnpinArea.appendChild(todo);
   modal.classList.add("display");
 });
+//Sort - By Time (I will do another MergeSort if I was Free)
+sortByTimeBtn.addEventListener("click", () => {
+  let listArray = JSON.parse(localStorage.getItem("list"));
+  // let pinArray = [];
+  // let unPinArray = [];
+
+  // listArray.forEach((item) => {
+  //   if (item.pinState === true) {
+  //     pinArray.push(item);
+  //   } else {
+  //     unPinArray.push(item);
+  //   }
+  // });
+  // pinArray = sortByTime(pinArray)
+  // unPinArray = sortByTime(unPinArray)
+
+  listArray = sortByTime(listArray).reverse();
+  localStorage.setItem("list", JSON.stringify(listArray));
+  loadData();
+
+  // console.log(listArray, pinArray, unPinArray);
+});
 //Search - Accuracy way , I do this first 😂 , I figure this way by myself
 searchBtn.addEventListener("click", () => {
   let rate = 0;
@@ -322,14 +345,16 @@ searchBtn.addEventListener("click", () => {
       }
       calcAcc = 0;
     });
-    let highestObj = myList.find(function (item) {
-      return item.todoText == highest;
-    });
+    let highestObj = myList.find(
+      (item) => item.todoText.toLowerCase() == highest
+    );
+    console.log(highest, myList, highestObj);
+
     if (rate != 0 || rate != false) {
       let condition = document.querySelector(".search-condition");
       let display = document.querySelector(".search-display");
       condition.innerHTML = `Keyword:${searchKeyword} , Accuracy:${rate}%`;
-      display.innerHTML = `Name:${highest} , Date:${highestObj.todoMonth}/${highestObj.todoDate}`;
+      display.innerHTML = `Name:${highest} , Category:${highestObj.todoCategory} , Date:${highestObj.todoMonth}/${highestObj.todoDate}`;
     } else {
       let condition = document.querySelector(".search-condition");
       let display = document.querySelector(".search-display");
@@ -347,7 +372,11 @@ closeBtn.addEventListener("click", () => {
 
 //Dug sheet
 function loadData() {
+  let todoAll = document.querySelectorAll(".todo-container");
   let myList = localStorage.getItem("list");
+  todoAll.forEach((item) => {
+    item.remove();
+  });
   if (myList !== null) {
     let listArray = JSON.parse(myList);
     listArray.forEach((item) => {
@@ -469,4 +498,30 @@ function loadTags() {
       tagsContainer.appendChild(newTag);
     }
   }
+}
+function sortByTime(array) {
+  let saveArray = array;
+  let counter = array.length;
+  return sorting(saveArray, counter);
+}
+// console.log(saveArray, sortedArray);
+
+function sorting(array, counter) {
+  let compare = 0;
+  let order = 0;
+  let sortedArray = [];
+  for (let i = 0; i < counter; i++) {
+    array.forEach((item, index) => {
+      if (Number(item.todoMonth + item.todoDate / 100) > compare) {
+        compare = Number(item.todoMonth + item.todoDate / 100);
+        order = index;
+      }
+    });
+    sortedArray.push(array[order]);
+    array.splice(order, 1);
+    compare = 0;
+    order = 0;
+  }
+  // console.log(sortedArray);
+  return sortedArray;
 }

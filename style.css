@@ -131,7 +131,8 @@ input::-webkit-inner-spin-button {
   outline: none;
 }
 
-.input-container .input-submitt {
+.input-container .input-submitt,
+.input-container .input-sort-by-time {
   width: 10vw;
   min-width: 8rem;
   height: 3rem;
@@ -156,6 +157,15 @@ input::-webkit-inner-spin-button {
 .input-container .input-submitt:active {
   scale: 0.95;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+.input-sort-by-time:hover {
+  cursor: pointer;
+  scale: 1.05;
+  color: #da4167;
+}
+.input-sort-by-time:active {
+  scale: 0.95;
 }
 
 .separate-container {
