@@ -8,7 +8,7 @@
 }
 
 :root {
-  --background-color: #fff;
+  --background-color: rgb(231, 231, 231);
   --text-color: #000;
   --component-color: #f4d35e;
   --interaction-color: #da4167;

@@ -26,7 +26,7 @@ colorSwitch.addEventListener("click", (e) => {
   let mode = JSON.parse(localStorage.getItem("state"));
   if (mode.color === "light") {
     root.style.setProperty("--background-color", "#000");
-    root.style.setProperty("--text-color", "#fff");
+    root.style.setProperty("--text-color", "rgb(231, 231, 231)");
     root.style.setProperty("--component-color", "#da4167");
     root.style.setProperty("--interaction-color", "#f4d35e");
     root.style.setProperty("--background-color-modal", "#333");
@@ -43,7 +43,7 @@ colorSwitch.addEventListener("click", (e) => {
     localStorage.setItem("state", JSON.stringify(mode));
     console.log("dark mode");
   } else if (mode.color === "dark") {
-    root.style.setProperty("--background-color", "#fff");
+    root.style.setProperty("--background-color", "rgb(231, 231, 231)");
     root.style.setProperty("--text-color", "#000");
     root.style.setProperty("--component-color", "#f4d35e");
     root.style.setProperty("--interaction-color", "#da4167");
@@ -566,7 +566,7 @@ function colorModeInitialize() {
     localStorage.setItem("state", JSON.stringify(bodyState));
   } else {
     if (mode.color === "light") {
-      root.style.setProperty("--background-color", "#fff");
+      root.style.setProperty("--background-color", "rgb(231, 231, 231)");
       root.style.setProperty("--text-color", "#000");
       root.style.setProperty("--component-color", "#f4d35e");
       root.style.setProperty("--interaction-color", "#da4167");
@@ -580,7 +580,7 @@ function colorModeInitialize() {
       colorSwitch.classList.add("ball-light");
     } else if (mode.color === "dark") {
       root.style.setProperty("--background-color", "#000");
-      root.style.setProperty("--text-color", "#fff");
+      root.style.setProperty("--text-color", "rgb(231, 231, 231)");
       root.style.setProperty("--component-color", "#da4167");
       root.style.setProperty("--interaction-color", "#f4d35e");
       root.style.setProperty("--background-color-modal", "#333");
