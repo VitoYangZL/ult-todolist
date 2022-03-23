@@ -65,7 +65,8 @@ colorSwitch.addEventListener("click", (e) => {
   }
 });
 //Category-Controller
-category.addEventListener("click", () => {
+category.addEventListener("click", (e) => {
+  e.preventDefault();
   tags = document.querySelectorAll(".tag");
   tagsContainer = document.querySelector(".tags-container");
   modal.classList.toggle("display");
@@ -329,7 +330,8 @@ submittBtn.addEventListener("click", (e) => {
   modal.classList.add("display");
 });
 //Sort - By Time (I will do another MergeSort if I am Free)
-sortByTimeBtn.addEventListener("click", () => {
+sortByTimeBtn.addEventListener("click", (e) => {
+  e.preventDefault();
   let listArray = JSON.parse(localStorage.getItem("list"));
   listArray = sortByTime(listArray).reverse();
   localStorage.setItem("list", JSON.stringify(listArray));
